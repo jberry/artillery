@@ -7,13 +7,6 @@ import subprocess,re,os,shutil
 from src.core import *
 import sys
 
-try:
-	import yaml
-
-except ImportError:
-	print "[!] Unable to import yaml - install python-yaml (apt-get install python-yaml)"
-	sys.exit()
-
 print '''
 Welcome to the Artillery installer. Artillery is a honeypot, file monitoring, and overall security tool used to protect your nix systems.
 
@@ -22,13 +15,13 @@ Written by: Dave Kennedy (ReL1K)
 
 if os.path.isfile("/etc/init.d/artillery"):
     answer = raw_input("Artillery detected. Do you want to uninstall [y/n:] ")
-    if answer.lower() == "yes" or answer.lower() == "y":
+    if answer.lower() in ["yes", "y"]:
         answer = "uninstall"
 
 if not os.path.isfile("/etc/init.d/artillery"):
     answer = raw_input("Do you want to install Artillery and have it automatically run when you restart [y/n]: ")
 
-if answer.lower() == "y" or answer.lower() == "yes":
+if answer.lower() in ["yes", "y"]:
     if is_posix():
         kill_artillery()
 
@@ -75,12 +68,12 @@ if answer.lower() == "y" or answer.lower() == "yes":
 
     if is_posix():
         choice = raw_input("Do you want to keep Artillery updated? (requires internet) [y/n]: ")
-        if choice == "y" or choice == "yes":
+        if choice in ["y", "yes"]:
             print "[*] Checking out Artillery through github to /var/artillery"
             # if old files are there
             if os.path.isdir("/var/artillery/"):
                 shutil.rmtree('/var/artillery')
-            subprocess.Popen("git clone https://github.com/trustedsec/artillery /var/artillery/", shell=True).wait()
+            subprocess.Popen("git clone https://github.com/binarydefense/artillery /var/artillery/", shell=True).wait()
             print "[*] Finished. If you want to update Artillery go to /var/artillery and type 'git pull'"
         else:
             print "[*] Copying setup files over..."
@@ -97,7 +90,7 @@ if answer.lower() == "y" or answer.lower() == "yes":
                 subprocess.Popen("chown root:wheel /Library/LaunchDaemons/com.artillery.plist", shell=True).wait()
 
     choice = raw_input("Would you like to start Artillery now? [y/n]: ")
-    if choice == "yes" or choice == "y":
+    if choice in ["yes", "y"]:
         if is_posix():
             subprocess.Popen("/etc/init.d/artillery start", shell=True).wait()
 
